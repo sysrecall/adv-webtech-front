@@ -1,5 +1,3 @@
-import SubmitButton from "./SubmitButton";
-
 export default function LoginForm() {
     return (
         <form method="post">
@@ -15,7 +13,7 @@ export default function LoginForm() {
                 </tr>
                 <tr>
                     <td>
-                        <SubmitButton name="Login" />
+                        <button type='submit'>Login</button>
                     </td>
                 </tr>
 
