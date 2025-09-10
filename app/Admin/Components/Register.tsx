@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import { z, ZodError, ZodIssue } from "zod";
 import api from "@/lib/axios";
+import { Link } from "lucide-react";
 
 
 // Zod schema for form validation
@@ -268,6 +269,14 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       >
         {isLoading ? "Registering..." : "Register"}
       </button>
+      <div className="text-center">
+            <Link 
+              href="/admin/login" 
+              className="text-blue-600 hover:text-blue-500 text-sm font-medium"
+            >
+              ← Login
+            </Link>
+       </div>
     </form>
   );
 }
