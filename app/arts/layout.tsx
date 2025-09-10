@@ -1,12 +1,16 @@
 import { Navbar04 } from "@/components/ui/shadcn-io/navbar-04";
 
-// Correct the import path
-export default function HomePage() {
+export default function Layout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <>
       <div className="relative w-full">
         <Navbar04 />
       </div>
+        {children}
     </>
   );
 }

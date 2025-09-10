@@ -1,15 +1,32 @@
 'use client';
 
-import * as z from 'zod';
-import axios from 'axios';
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { redirect } from 'next/navigation';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+import Link from 'next/link';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { PasswordInput } from '@/components/ui/password-input';
+import { PhoneInput } from '@/components/ui/phone-input';
+import axios from 'axios';
+import { redirect } from 'next/navigation';
+
 
 const customerRegisterSchema = z.object({
     email: z.email({ error: "Invalid email format" }),
@@ -22,18 +39,18 @@ const customerRegisterSchema = z.object({
         .regex(/\S*[A-Z]\S*/, { error: "Password must contain at least one uppercase letter" }),
     confirmPassword: z.string("Confirm password is required"),
     phone: z.string()
-        .min(11, { error: "Phone must be at least 11 digits long" })
-        .regex(/^\d+$/, {error: "Phone number must only contain digits"}),
-    gender: z.enum(['male', 'female'], { error: "Gender must be either 'male' or 'female'" })
+        // .min(11, { error: "Phone must be at least 11 digits long" })
+        .regex(/^\+\d+$/, { error: "Phone number must only contain digits" }),
+    // gender: z.enum(['male', 'female'], { error: "Gender must be either 'male' or 'female'" })
 }).refine(data => data.password === data.confirmPassword, {
     error: "Passwords must match",
     path: ["confirmPassword"],
 });
 
 async function onSubmit(values: z.infer<typeof customerRegisterSchema>) {
-    const {confirmPassword, ...payload} = values;  
+    const { confirmPassword, ...payload } = values;
     console.log(payload);
-    
+
     await axios.post('http://localhost:3000/customer', payload);
     redirect('http://localhost:8000/customer/login');
 }
@@ -48,175 +65,151 @@ export default function RegisterForm() {
             password: "",
             confirmPassword: "",
             phone: "",
-            gender: "male"
         }
     });
 
 
     return (
-        <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-1 bg-white p-8 w-md rounded-2xl shadow">
-            <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-                <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                    <Input {...field} />
-                </FormControl>
-                <FormMessage />
-                </FormItem>
-            )}
-            />
-            <FormField
-            control={form.control}
-            name="fullName"
-            render={({ field }) => (
-                <FormItem>
-                <FormLabel>Full Name</FormLabel>
-                <FormControl>
-                    <Input {...field} />
-                </FormControl>
-                <FormMessage />
-                </FormItem>
-            )}
-            />
-            <FormField
-            control={form.control}
-            name="username"
-            render={({ field }) => (
-                <FormItem>
-                <FormLabel>Username</FormLabel>
-                <FormControl>
-                    <Input {...field} />
-                </FormControl>
-                <FormMessage />
-                </FormItem>
-            )}
-            />
-            <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-                <FormItem>
-                <FormLabel>Password</FormLabel>
-                <FormControl>
-                    <Input type='password' {...field} />
-                </FormControl>
-                <FormMessage />
-                </FormItem>
-            )}
-            />
-            <FormField
-            control={form.control}
-            name="confirmPassword"
-            render={({ field }) => (
-                <FormItem>
-                <FormLabel>Confirm Password</FormLabel>
-                <FormControl>
-                    <Input type='password' {...field} />
-                </FormControl>
-                <FormMessage />
-                </FormItem>
-            )}
-            />
-            <FormField
-            control={form.control}
-            name="phone"
-            render={({ field }) => (
-                <FormItem>
-                <FormLabel>Phone</FormLabel>
-                <FormControl>
-                    <Input {...field} />
-                </FormControl>
-                <FormMessage />
-                </FormItem>
-            )}
-            />
-            <FormField
-            control={form.control}
-            name="gender"
-            render={({ field }) => (
-                <FormItem>
-                <FormLabel>Gender</FormLabel>
-                <FormControl>
-                    <RadioGroup onChange={field.onChange} defaultValue={field.value}>
-                            <div className="flex items-center gap-3">
-                                <RadioGroupItem value="male" id="r1" />
-                                <Label htmlFor="r1">Male</Label>
-                            </div>
-                            <div className="flex items-center gap-3">
-                                <RadioGroupItem value="female" id="r2" />
-                                <Label htmlFor="r2">Female</Label>
-                            </div>
-                        </RadioGroup>
-                </FormControl>
-                <FormMessage />
-                </FormItem>
-            )}
-            />
-            <Button type="submit" className='my-4 w-full'>Register</Button>
-        </form>
-        </Form>
-        // <form method="post" onSubmit={handleSubmit(onSubmit)} className='bg-slate-100 w-[300px] h-[400px] grid justify-between rounded-2xl p-4'>
-        //     <table>
-        //         <tbody>
-        //             <tr>
-        //                 <td>
-        //                     <input {...register("email")} placeholder='Email'/> 
-        //                     {errors.email && <p>{errors.email.message}</p>}
+        <div className="flex min-h-[60vh] h-full w-full items-center justify-center px-4">
+            <Card className="mx-auto max-w-sm w-full">
+                <CardHeader>
+                    <CardTitle className="text-2xl">Register</CardTitle>
+                    <CardDescription>
+                        Create a new account by filling out the form below.
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                            <div className="grid gap-4">
+                                {/* Username Field */}
+                                <FormField
+                                    control={form.control}
+                                    name="username"
+                                    render={({ field }) => (
+                                        <FormItem className="grid gap-2">
+                                            <FormLabel htmlFor="username">Username</FormLabel>
+                                            <FormControl>
+                                                <Input id="username" placeholder="johndoe" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                {/* Name Field */}
+                                <FormField
+                                    control={form.control}
+                                    name="fullName"
+                                    render={({ field }) => (
+                                        <FormItem className="grid gap-2">
+                                            <FormLabel htmlFor="fullName">Full Name</FormLabel>
+                                            <FormControl>
+                                                <Input id="fullName" placeholder="John Doe" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
 
-        //                 </td>
-        //             </tr>                    
-        //             <tr>
-        //                 <td>
-        //                     <input {...register("fullName")} placeholder='Full Name'/>
-        //                     {errors.fullName && <p>{errors.fullName.message}</p>}
-        //                 </td> 
-        //             </tr>
-        //             <tr>
-        //                 <td>
-        //                     <input  {...register("username")}  placeholder='Username'/> 
-        //                     {errors.username && <p>{errors.username.message}</p>}
-        //                 </td>
-        //             </tr>
-        //             <tr>
-        //                 <td>
-        //                     <input  {...register("password")} type="password" placeholder='Password'/>
-        //                     {errors.password && <p>{errors.password.message}</p>}
+                                {/* Email Field */}
+                                <FormField
+                                    control={form.control}
+                                    name="email"
+                                    render={({ field }) => (
+                                        <FormItem className="grid gap-2">
+                                            <FormLabel htmlFor="email">Email</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    id="email"
+                                                    placeholder="johndoe@mail.com"
+                                                    type="email"
+                                                    autoComplete="email"
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
 
-        //                 </td> 
-        //             </tr>
-        //             <tr>
-        //                 <td>
-        //                     <input  {...register("confirmPassword")} type="password" placeholder='Confirm Password'/>
-        //                     {errors.confirmPassword && <p>{errors.confirmPassword.message}</p>}
-        //                 </td> 
-        //             </tr>
-        //             <tr>
-        //                 <td>
-        //                     <input  {...register("phone")} placeholder='Phone' /> 
-        //                     {errors.phone && <p>{errors.phone.message}</p>}
-        //                 </td>
-        //             </tr>
-        //             <tr>
-        //                 <td>
-        //                     <select  {...register("gender")} >
-        //                         <option value="">Select Gender</option>
-        //                         <option value="male">Male</option>
-        //                         <option value="female">Female</option>
-        //                     </select>
-        //                     {errors.gender && <p>{errors.gender.message}</p>}
-        //                 </td>
-        //             </tr>
-        //             <tr>
-        //                 <td>
-        //                     <button type="submit">Register</button>
-        //                 </td>
-        //             </tr>
-        //         </tbody>
-        //     </table>
-        // </form>
+                                {/* Phone Field */}
+                                <FormField
+                                    control={form.control}
+                                    name="phone"
+                                    render={({ field }) => (
+                                        <FormItem className="grid gap-2">
+                                            <FormLabel htmlFor="phone">Phone Number</FormLabel>
+                                            <FormControl>
+                                                <PhoneInput {...field} defaultCountry="BD" />
+                                                {/* <Input
+                          id="phone"
+                          placeholder="555-123-4567"
+                          type="tel"
+                          autoComplete="tel"
+                          {...field}
+                        /> */}
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+
+                                {/* Password Field */}
+                                <FormField
+                                    control={form.control}
+                                    name="password"
+                                    render={({ field }) => (
+                                        <FormItem className="grid gap-2">
+                                            <FormLabel htmlFor="password">Password</FormLabel>
+                                            <FormControl>
+                                                <PasswordInput
+                                                    id="password"
+                                                    placeholder="******"
+                                                    autoComplete="new-password"
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+
+                                {/* Confirm Password Field */}
+                                <FormField
+                                    control={form.control}
+                                    name="confirmPassword"
+                                    render={({ field }) => (
+                                        <FormItem className="grid gap-2">
+                                            <FormLabel htmlFor="confirmPassword">
+                                                Confirm Password
+                                            </FormLabel>
+                                            <FormControl>
+                                                <PasswordInput
+                                                    id="confirmPassword"
+                                                    placeholder="******"
+                                                    autoComplete="new-password"
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+
+                                <Button type="submit" className="w-full">
+                                    Register
+                                </Button>
+                            </div>
+                        </form>
+                    </Form>
+                    <div className="mt-4 text-center text-sm">
+                        Already have an account?{' '}
+                        <Link href="login" className="underline">
+                            Login
+                        </Link>
+                    </div>
+                </CardContent>
+            </Card>
+        </div>
     );
 }

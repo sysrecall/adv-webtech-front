@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-export default async function Customer() {
+export default function Customer() {
     return (
         <>
             <div>Customer Page</div>

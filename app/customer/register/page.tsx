@@ -2,13 +2,10 @@ import RegisterForm from "../components/RegisterForm";
 
 export default function Register() {
     return (
-        <div className="h-screen grid content-center justify-center gap-2">
-                <div className="text-center font-bold text-4xl">
-                    <p>REGISTER</p>
-                </div>
-                <div className="bg-accent">
-                    <RegisterForm />
-                </div>
+        <div className="bg-muted flex min-h-svh flex-col items-center justify-center p-6 md:p-10">
+            <div className="w-full max-w-sm md:max-w-3xl">
+                <RegisterForm />
+            </div>
         </div>
     );
 }
