@@ -33,10 +33,7 @@ export default function Page() {
                   Dashboard
                 </BreadcrumbLink>
               </BreadcrumbItem>
-              <BreadcrumbSeparator className="hidden md:block" />
-              <BreadcrumbItem>
-                <BreadcrumbPage>Overview</BreadcrumbPage>
-              </BreadcrumbItem>
+             
             </BreadcrumbList>
           </Breadcrumb>
         </header>

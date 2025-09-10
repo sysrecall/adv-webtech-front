@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import { z, ZodError, ZodIssue } from "zod";
 import api from "@/lib/axios";
-import { Link } from "lucide-react";
+import Link from "next/link";
 
 
 // Zod schema for form validation
@@ -76,16 +76,19 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!isMounted.current) return;
+  e.preventDefault();
+  if (!isMounted.current) return;
 
-    setErrors({});
-    setMessage("");
+  setErrors({});
+  setMessage("");
 
+  try {
+    // Convert age to number for validation
     const parsedForm = {
       ...form,
       age: parseInt(form.age) || 0,
     };
+    
     const result = formSchema.safeParse(parsedForm);
 
     if (!result.success) {
@@ -98,45 +101,54 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       return;
     }
 
-    if (!form) {
-      setMessage("Form data is missing. Please try again.");
-      console.error("Form is undefined");
-      return;
-    }
-
     setIsLoading(true);
 
-    try {
-      const formData = new FormData();
-      Object.entries(form).forEach(([key, value]) => {
-        formData.append(key, value.toString());
-      });
-      if (nidImage) formData.append("nidImage", nidImage); // Append the file
+    const formData = new FormData();
+    // Add all form fields
+    Object.entries(form).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+    
+    // Add the parsed age (as number)
+    formData.append("age", parsedForm.age.toString());
+    
+    if (nidImage) formData.append("nidImage", nidImage);
 
-      console.log("FormData being sent:", Object.fromEntries(formData)); // Debug log
-      const res = await api.post("/admin/register", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+    console.log("FormData being sent:", Object.fromEntries(formData));
+    
+    const res = await api.post("/admin/register", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
 
-      if (isMounted.current) {
-        setMessage("Registration successful!");
-        setForm({ fullName: "", username: "", email: "", password: "", age: "", phone: "", gender: "", nid: "" });
-        setNidImage(null);
-        if (fileInputRef.current) fileInputRef.current.value = "";
-      }
-      console.log("API Response:", res.data); // Debug response
-    } catch (err: unknown) {
-      if (isMounted.current) {
-        setMessage((err as any)?.response?.data?.message || "Registration failed!");
-        console.error("API Error:", err); // Log the error
-      }
-    } finally {
-      if (isMounted.current) {
-        setIsLoading(false);
-      }
+    if (isMounted.current) {
+      setMessage("Registration successful!");
+      setForm({ 
+        fullName: "", 
+        username: "", 
+        email: "", 
+        password: "", 
+        age: "", 
+        phone: "", 
+        gender: "", 
+        nid: "" 
+      });
+      setNidImage(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
     }
-  };
-
+    
+    console.log("API Response:", res.data);
+  } catch (err: unknown) {
+    if (isMounted.current) {
+      const errorMessage = (err as any)?.response?.data?.message || "Registration failed!";
+      setMessage(errorMessage);
+      console.error("API Error:", err);
+    }
+  } finally {
+    if (isMounted.current) {
+      setIsLoading(false);
+    }
+  }
+};
 
   return (
     <form onSubmit={handleSubmit} className="bg-white shadow-md rounded-lg p-8 w-full max-w-md space-y-4">
@@ -269,14 +281,14 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       >
         {isLoading ? "Registering..." : "Register"}
       </button>
-      <div className="text-center">
-            <Link 
-              href="/admin/login" 
-              className="text-blue-600 hover:text-blue-500 text-sm font-medium"
-            >
-              ← Login
-            </Link>
-       </div>
+      <div className="text-center mt-4">
+      <Link 
+        href="/admin/login" 
+        className="text-blue-500 hover:text-blue-700 text-sm font-medium"
+      >
+        ← Back to Login
+      </Link>
+    </div>
     </form>
   );
 }

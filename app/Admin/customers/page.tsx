@@ -29,14 +29,11 @@ export default function Page() {
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href="/admin/dashboard">
-                  Dashboard
+                <BreadcrumbLink href="/admin/customers">
+                  Customers
                 </BreadcrumbLink>
               </BreadcrumbItem>
-              <BreadcrumbSeparator className="hidden md:block" />
-              <BreadcrumbItem>
-                <BreadcrumbPage>Customers</BreadcrumbPage>
-              </BreadcrumbItem>
+              
             </BreadcrumbList>
           </Breadcrumb>
         </header>
