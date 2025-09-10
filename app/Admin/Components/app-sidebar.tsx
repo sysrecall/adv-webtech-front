@@ -1,5 +1,5 @@
 // @/app/admin/Components/app-sidebar.tsx
-import { Home, User, Palette } from "lucide-react"; // Optional: Icons for visual appeal (install lucide-react if needed)
+import { Home, User, Palette } from "lucide-react"; 
 import Link from "next/link";
 import {
   Sidebar,
@@ -12,7 +12,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
-// Define menu items as an array for easier management
+
 const menuItems = [
   {
     title: "Dashboard",
@@ -22,7 +22,7 @@ const menuItems = [
   {
     title: "Customers",
     href: "/admin/customers",
-    icon: User, // Example icon; adjust as needed
+    icon: User, 
   },
   {
     title: "Profile",
@@ -32,9 +32,14 @@ const menuItems = [
   {
     title: "Arts",
     href: "/admin/arts",
-    icon: Palette, // Example icon for "Arts"
+    icon: Palette,
   },
-  // Add more items as needed
+  {
+    title: "Admins",
+    href: "/admin/admin_list",
+    icon: User,
+  }
+
 ];
 
 export function AppSidebar() {
