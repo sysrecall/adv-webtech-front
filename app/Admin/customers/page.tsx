@@ -98,32 +98,44 @@ export default function Page() {
   };
 
   const handleCreateOrUpdate = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!adminId) {
-      showNotification("Admin not authenticated", "error");
-      return;
-    }
+  e.preventDefault();
+  if (!adminId) {
+    showNotification("Admin not authenticated", "error");
+    return;
+  }
+  
+  try {
+    setLoading(true);
     
-    try {
-      setLoading(true);
-      if (selectedCustomer) {
-        await api.patch(`/admin/${adminId}/customers/${selectedCustomer.id}`, formData);
-        showNotification("Customer updated successfully", "success");
-      } else {
-        await api.post(`/admin/${adminId}/customers`, formData);
-        showNotification("Customer created successfully", "success");
-      }
-      setIsFormOpen(false);
-      setSelectedCustomer(null);
-      setFormData({ fullName: "", email: "", phone: "", gender: "", username: "" });
-      fetchCustomers();
-    } catch (error) {
-      showNotification("Failed to save customer", "error");
-    } finally {
-      setLoading(false);
+    // Debug what you're sending
+    console.log("Sending form data:", formData);
+    
+    if (selectedCustomer) {
+      await api.patch(`/admin/${adminId}/customers/${selectedCustomer.id}`, formData);
+      showNotification("Customer updated successfully", "success");
+    } else {
+      await api.post(`/admin/${adminId}/customers`, formData);
+      showNotification("Customer created successfully", "success");
     }
-  };
-
+    setIsFormOpen(false);
+    setSelectedCustomer(null);
+    setFormData({ fullName: "", email: "", phone: "", gender: "", username: "" });
+    fetchCustomers();
+  } catch (error: any) {
+    console.error("Full API Error:", error.response?.data);
+    console.error("Validation errors:", error.response?.data?.message);
+    
+    // Show specific validation errors if available
+    if (error.response?.data?.message && Array.isArray(error.response.data.message)) {
+      const errorMessages = error.response.data.message.join(', ');
+      showNotification(`Validation errors: ${errorMessages}`, "error");
+    } else {
+      showNotification(error.response?.data?.message || "Failed to save customer", "error");
+    }
+  } finally {
+    setLoading(false);
+  }
+};
   const handleDelete = async () => {
     if (!deleteCustomerId || !adminId) return;
     try {

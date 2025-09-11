@@ -1,6 +1,8 @@
 // @/app/admin/Components/app-sidebar.tsx
 import { Home, User, Palette } from "lucide-react"; 
 import Link from "next/link";
+import NotificationBell from "./NotificationBell";
+
 import {
   Sidebar,
   SidebarContent,
@@ -55,6 +57,12 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+                {/* Notification icon */}
+            <SidebarMenuItem>
+                <SidebarMenuButton>
+                  <NotificationBell />
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
