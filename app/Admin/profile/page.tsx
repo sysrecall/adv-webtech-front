@@ -31,6 +31,7 @@ interface AdminProfile {
   phone: string;
   gender: string;
   nid: string;
+  nidImage?: string; // base64 string
 }
 
 export default function ProfilePage() {
@@ -47,11 +48,13 @@ useEffect(() => {
 
 const fetchProfile = async () => {
   setLoading(true);
-  setError(""); // Reset error on fetch
+  setError(""); 
   try {
     const response = await api.get("/admin/profile");
+        console.log("Profile data received:", response.data); // Add this line
+
     setProfile(response.data);
-    setEditForm(response.data); // Initialize edit form with fetched data
+    setEditForm(response.data); 
   } catch (err: any) {
     handleFetchError(err);
   } finally {
@@ -62,9 +65,9 @@ const fetchProfile = async () => {
 const handleFetchError = (err: any) => {
   if (err.response?.status === 403 || err.response?.status === 401) {
     setError("Authentication required. Redirecting to login...");
-    setTimeout(() => {
-      router.push("/admin/login");
-    }, 2000);
+    // setTimeout(() => {
+    //   router.push("/admin/login");
+    // }, 2000);
   } else {
     setError("Failed to load profile data");
     console.error("Profile fetch error:", err);
@@ -232,11 +235,37 @@ const handleFetchError = (err: any) => {
                 Your personal details and account status
               </p>
               
-              <div className="flex justify-center mb-4">
-                <div className="h-24 w-24 rounded-full bg-blue-100 flex items-center justify-center">
-                  <span className="text-2xl font-semibold text-blue-600">
-                    {profile ? getInitials(profile.fullName) : "AD"}
-                  </span>
+              <div className="flex justify-center mb-4 relative">
+                <div className="relative">
+                  {profile?.nidImage ? (
+                    <div className="h-24 w-24 rounded-full overflow-hidden border-2 border-blue-200 shadow-sm">
+                      <img 
+                        src={profile.nidImage} 
+                        alt="Profile" 
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="h-24 w-24 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center border-2 border-blue-100 shadow-sm">
+                      <span className="text-2xl font-semibold text-blue-700">
+                        {profile ? getInitials(profile.fullName) : "AD"}
+                      </span>
+                    </div>
+                  )}
+                  
+                  {/* Dynamic status indicator based on profile status */}
+                  <div className={`absolute -bottom-1 -right-1 h-6 w-6 rounded-full border-2 border-white flex items-center justify-center shadow-sm ${
+                    profile?.status === 'active' ? 'bg-green-500' : 'bg-gray-400'
+                  }`}>
+                    <svg className="h-3 w-3 text-white" fill="currentColor" viewBox="0 0 8 8">
+                      <circle cx="4" cy="4" r="3" />
+                    </svg>
+                  </div>
+                  
+                  {/* Pulse animation only for active status */}
+                  {profile?.status === 'active' && (
+                    <div className="absolute -bottom-2 -right-2 h-7 w-7 bg-green-400 rounded-full opacity-75 animate-ping"></div>
+                  )}
                 </div>
               </div>
               
@@ -354,15 +383,19 @@ const handleFetchError = (err: any) => {
                   </div>
                 </div>
 
+                {/* NID Number Field - Make sure it's visible even if empty */}
                 <div className="space-y-2">
                   <Label htmlFor="nid">National ID (NID)</Label>
                   <Input
                     id="nid"
-                    value={isEditing ? editForm.nid || "" : profile?.nid || ""}
+                    value={isEditing ? editForm.nid || "" : profile?.nid || "No NID provided"}
                     onChange={(e) => handleInputChange("nid", e.target.value)}
                     disabled={!isEditing}
+                    placeholder="No NID provided"
                   />
                 </div>
+
+                
               </div>
             </div>
           </div>
