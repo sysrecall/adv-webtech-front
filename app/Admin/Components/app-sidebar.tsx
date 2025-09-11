@@ -30,11 +30,6 @@ const menuItems = [
     icon: User,
   },
   {
-    title: "Arts",
-    href: "/admin/arts",
-    icon: Palette,
-  },
-  {
     title: "Admins",
     href: "/admin/admin_list",
     icon: User,
