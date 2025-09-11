@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { ShoppingCart, Star } from "lucide-react";
 import axios from "axios";
 import Link from "next/link";
+import Image from "next/image";
+import ArtItem from "../components/ArtItem";
 
 type Art = {
   id: string,
@@ -26,27 +28,19 @@ export async function generateStaticParams() {
 
 export default async function ArtPage({ params }: { params: { id: string } }) {
   const art = (await axios.get<Art>(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}art/${(await params).id}`)).data;
+  const similarArts: Art[] = (await axios.get<Art[]>(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}art/similar/style/${art.style}`)).data;
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12">
         {/* Product Images */}
-        <div className="flex flex-col gap-4">
-          <img
+        <div className="flex flex-col gap-4 relative">
+          <Image
             src={process.env.NEXT_PUBLIC_BACKEND_BASE_URL + art.imageUrl}
-            alt="Shadcn UI main"
-            className="rounded-2xl shadow-lg"
+            fill={true}
+            alt={art.title}
+            className="rounded-2xl shadow-lg object-contain p-4"
           />
-          {/* <div className="grid grid-cols-4 gap-4">
-            {[1, 2, 3, 4].map((i) => (
-              <img
-                key={i}
-                src={`https://picsum.photos/200/200?random=${i}`}
-                alt={`Thumbnail ${i}`}
-                className="rounded-xl cursor-pointer hover:opacity-80"
-              />
-            ))}
-          </div> */}
         </div>
 
         {/* Product Details */}
@@ -106,18 +100,8 @@ export default async function ArtPage({ params }: { params: { id: string } }) {
       <div className="max-w-6xl mx-auto mt-16">
         <h2 className="text-2xl font-bold mb-6">Related Products</h2>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[1, 2, 3, 4].map((i) => (
-            <Card key={i} className="rounded-xl shadow-md hover:shadow-lg transition">
-              <CardContent className="p-4">
-                <img
-                  src={`https://picsum.photos/300/200?random=${i}`}
-                  alt={`Product ${i}`}
-                  className="rounded-lg mb-4"
-                />
-                <h3 className="font-semibold text-lg">Product {i}</h3>
-                <p className="text-gray-600 text-sm">$29</p>
-              </CardContent>
-            </Card>
+          {similarArts.map((sa) => (
+            <ArtItem key={sa.id} title={sa.title} artistName={sa.artist.username} artId={sa.id} imagePath={process.env.NEXT_PUBLIC_BACKEND_BASE_URL + sa.imageUrl} price={sa.price} />
           ))}
         </div>
       </div>

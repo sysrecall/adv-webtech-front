@@ -1,4 +1,4 @@
-import { AppSidebar } from "@/components/app-sidebar"
+import { AppSidebar } from "@/components/app-sidebar-home"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -19,11 +19,16 @@ export default function ArtsPage() {
   return (
     <>
       <SidebarProvider>
-        <AppSidebar />
+        <AppSidebar/>
         <SidebarInset>
-          <div className="flex flex-1 flex-col gap-4 p-4">
+          <div className="flex flex-wrap gap-2 p-4">
             
-            <ArtItem artId="2701727d-7e2e-4961-bf74-b01950f62f78" title="test" artistName="asd" imagePath="http://localhost:3000/uploads/art/astarrynight.jpg" price={123}/>
+            <ArtItem artId="727c9a57-4770-4c58-9b5e-4cb8fb72c340" title="test" artistName="asd" imagePath="http://localhost:3000/uploads/art/astarrynight.jpg" price={123}/>
+            <ArtItem artId="727c9a57-4770-4c58-9b5e-4cb8fb72c340" title="test" artistName="asd" imagePath="http://localhost:3000/uploads/art/astarrynight.jpg" price={123}/>
+            <ArtItem artId="727c9a57-4770-4c58-9b5e-4cb8fb72c340" title="test" artistName="asd" imagePath="http://localhost:3000/uploads/art/astarrynight.jpg" price={123}/>
+            <ArtItem artId="727c9a57-4770-4c58-9b5e-4cb8fb72c340" title="test" artistName="asd" imagePath="http://localhost:3000/uploads/art/astarrynight.jpg" price={123}/>
+            <ArtItem artId="727c9a57-4770-4c58-9b5e-4cb8fb72c340" title="test" artistName="asd" imagePath="http://localhost:3000/uploads/art/astarrynight.jpg" price={123}/>
+            <ArtItem artId="727c9a57-4770-4c58-9b5e-4cb8fb72c340" title="test" artistName="asd" imagePath="http://localhost:3000/uploads/art/astarrynight.jpg" price={123}/>
 
           </div>
         </SidebarInset>

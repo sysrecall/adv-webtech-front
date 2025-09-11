@@ -42,6 +42,10 @@ const data = {
           "url": "arts/style/vintage"
         },
         {
+          "title": "Classic",
+          "url": "arts/style/classic"
+        },
+        {
           "title": "Black and White",
           "url": "arts/style/bg"
         },

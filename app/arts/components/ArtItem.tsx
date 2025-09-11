@@ -21,14 +21,14 @@ type ArtItemProps = {
 export default function ArtItem({artId, title, artistName, imagePath, price }: ArtItemProps) {
     return (
         <div className="p-6 flex justify-center">
-            <Link href={"arts/" + artId}>
-            <Card className="w-48">
+            <Link href={"/arts/" + artId}>
+            <Card className="w-60">
                 <CardContent className="p-3">
                     <div className="aspect-square rounded-md bg-gray-100 mb-2 relative">
                         <Image
                             src={imagePath}
                             alt={title}
-                            fill
+                            fill={true}
                             className="object-cover rounded-md"
                         />
                     </div>
