@@ -1,14 +1,27 @@
 
-import Navbar from "./Components/Navbar";
+"use client";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+import { NotificationsProvider } from "./contexts/NotificationsContext";
+
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div>
-      <Navbar />
-      <main>{children}</main>
-    </div>
+    <NotificationsProvider>
+    {children}
+    </NotificationsProvider>
   );
 }
+
+
+// import Navbar from "./Components/Navbar";
+
+// export default function Layout({ children }: { children: React.ReactNode }) {
+//   return (
+//     <div>
+//       <Navbar />
+//       <main>{children}</main>
+//     </div>
+//   );
+// }
 
 // export default function Layout({
 //   children,
