@@ -95,14 +95,8 @@ const handleFetchError = (err: any) => {
   };
 
   const handleLogout = async () => {
-    try {
-      await api.post("/auth/logout");
-      router.push("/admin/login");
-    } catch (err) {
-      console.error("Logout error:", err);
+     router.push("/admin/login");
 
-      router.push("/admin/login");
-    }
   };
 
   if (loading) {
