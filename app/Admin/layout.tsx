@@ -1,24 +1,16 @@
 
-
 "use client";
 
-// import "./globals.css";
-import { usePathname } from "next/navigation";
-import Navbar from "./Components/Navbar";
+import { NotificationsProvider } from "./contexts/NotificationsContext";
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
-  const isAdmin = pathname.startsWith("/admin");
-
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning={true}>
-      <body>
-        {!isAdmin && <Navbar />}
-        {children}
-      </body>
-    </html>
+    <NotificationsProvider>
+    {children}
+    </NotificationsProvider>
   );
 }
+
 
 // import Navbar from "./Components/Navbar";
 
