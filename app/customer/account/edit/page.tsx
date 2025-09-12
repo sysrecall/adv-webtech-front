@@ -8,6 +8,9 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import Image from "next/image";
+import axios, { AxiosError } from 'axios';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface CustomerFormValues {
     username: string
@@ -35,12 +38,39 @@ export default function CustomerAccountEdit() {
         },
     })
 
-    const profilePhotoPath = watch("profilePhotoPath")
-    const isActive = watch("isActive")
-    const gender = watch("gender")
+    const router = useRouter();
 
-    const onSubmit = (data: CustomerFormValues) => {
-        console.log("Saving customer:", data)
+    useEffect(() => {
+        async function fetchUser() {
+            try {
+                const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}customer/`, { withCredentials: true });
+                reset(res.data);
+            } catch (err) {
+                if (err instanceof AxiosError)
+                    if (err.status === 401)
+                        router.push('/customer/login');
+
+                console.log(err);
+            }
+        }
+        fetchUser();
+    }, [reset]);
+
+    const profilePhotoPath = watch("profilePhotoPath");
+    const gender = watch("gender");
+
+    const onSubmit = async (data: CustomerFormValues) => {
+        const cleaned = Object.fromEntries(
+            Object.entries(data).filter(([_, value]) => {
+                if (typeof value === "string") {
+                    return value.trim() !== ""
+                }
+                return value !== null && value !== undefined
+            })
+        )
+
+        if (Object.keys(cleaned).length == 0) return;
+        await axios.patch(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}customer/edit`, cleaned, { withCredentials: true });
     }
 
     return (

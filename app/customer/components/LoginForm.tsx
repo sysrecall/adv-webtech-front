@@ -7,27 +7,12 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
 import Image from "next/image"
-import { FormEvent } from "react"
-import axios from "axios";
-import { redirect, RedirectType } from "next/navigation";
+import { FormEvent, useState } from "react"
+import axios, { AxiosError } from "axios";
+import { redirect, RedirectType, useRouter } from "next/navigation";
+import { Alert, AlertTitle } from "@/components/ui/alert";
+import { AlertCircleIcon, Terminal } from "lucide-react";
 
-async function onSubmit(event: FormEvent<HTMLFormElement>) {
-  event.preventDefault();
-  const payload = new FormData(event.currentTarget);
-
-  try {
-    await axios.post('http://localhost:3000/customer/login', payload,
-      {
-        headers: { 'Content-Type': 'application/json' },
-        withCredentials: true
-      }
-    );
-
-  } catch (e) {
-    console.log(e);
-  }
-  redirect('http://localhost:8000', RedirectType.push);
-}
 
 
 export function LoginForm({
@@ -35,6 +20,29 @@ export function LoginForm({
   ...props
 
 }: React.ComponentProps<"div">) {
+  const router = useRouter();
+  const [message, setMessage] = useState<string | null>(null);
+
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setMessage(null);
+    const payload = new FormData(event.currentTarget);
+
+    try {
+      await axios.post('http://localhost:3000/customer/login', payload,
+        {
+          headers: { 'Content-Type': 'application/json' },
+          withCredentials: true
+        }
+      );
+      router.push("/"); 
+
+    } catch (e) {
+      const error = e as AxiosError;
+      setMessage(error.response?.statusText ?? null);
+    }
+  }
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0">
@@ -58,18 +66,20 @@ export function LoginForm({
               <div className="grid gap-3">
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
-                  {/* <Link
-                    href="forgot-password"
-                    className="ml-auto text-sm underline-offset-2 hover:underline"
-                  >
-                    Forgot your password?
-                  </Link> */}
                 </div>
                 <Input id="password" name="password" type="password" placeholder="password" />
               </div>
               <Button type="submit" className="w-full">
                 Login
               </Button>
+              {message &&
+                <div className="w-full">
+                  <Alert variant="destructive">
+                    <AlertCircleIcon />
+                    <AlertTitle>{message}</AlertTitle>
+                  </Alert>
+                </div>
+              }
               <div className="text-center text-sm">
                 Don&apos;t have an account?{" "}
                 <Link href="register" className="underline underline-offset-4">
