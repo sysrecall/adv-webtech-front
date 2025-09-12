@@ -1,19 +1,8 @@
 "use client";
 import { AppSidebar } from "@/app/admin/Components/app-sidebar";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import {Breadcrumb,BreadcrumbItem,BreadcrumbLink,BreadcrumbList,} from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
+import {SidebarInset,SidebarProvider,SidebarTrigger,} from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -223,7 +212,7 @@ const handleFetchError = (err: any) => {
           <div className="flex flex-col gap-2">
             <h1 className="text-3xl font-bold tracking-tight">Profile Settings</h1>
             <p className="text-gray-600">
-              Manage your account settings and personal information.
+              Manage account settings and personal information.
             </p>
           </div>
 
@@ -232,7 +221,7 @@ const handleFetchError = (err: any) => {
             <div className="md:col-span-1 bg-white rounded-lg shadow-sm p-6">
               <h2 className="text-xl font-semibold mb-2">Profile Information</h2>
               <p className="text-gray-600 mb-4">
-                Your personal details and account status
+                 Personal details and account status
               </p>
               
               <div className="flex justify-center mb-4 relative">
@@ -295,7 +284,7 @@ const handleFetchError = (err: any) => {
                 <div>
                   <h2 className="text-xl font-semibold">Personal Information</h2>
                   <p className="text-gray-600">
-                    Update your personal information and contact details
+                    Update personal information and contact details
                   </p>
                 </div>
                 
