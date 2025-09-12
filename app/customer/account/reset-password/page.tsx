@@ -1,9 +1,8 @@
-'use client'
+'use client';
 
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
 
 import {
   Form,
@@ -12,47 +11,61 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Button } from '@/components/ui/button'
+} from '@/components/ui/form';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { PasswordInput } from '@/components/ui/password-input'
+} from '@/components/ui/card';
+import { PasswordInput } from '@/components/ui/password-input';
+import axios, { AxiosError } from 'axios';
+import { useState } from 'react';
+import { Alert, AlertTitle } from '@/components/ui/alert';
+import { AlertCircleIcon, CheckCircle2Icon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
-const customerResetPasswordSchema = z.object({
-    password: z.string()
-        .min(8, { error: "Password must be at least 8 chars long" })
-        .regex(/\S*[A-Z]\S*/, { error: "Password must contain at least one uppercase letter" }),
-    confirmPassword: z.string("Confirm password is required"),
-}).refine(data => data.password === data.confirmPassword, {
-    error: "Passwords must match",
-    path: ["confirmPassword"],
+const customerChangePasswordSchema = z.object({
+  password: z.string(),
+  newPassword: z.string("Confirm password is required")
+    .min(8, { error: "Password must be at least 6 chars long" })
+    .regex(/\S*[A-Z]\S*/, { error: "Password must contain at least one uppercase letter" }),
 });
 
 export default function CustomerResetPassword() {
-  const form = useForm<z.infer<typeof customerResetPasswordSchema>>({
-    resolver: zodResolver(customerResetPasswordSchema),
+  const [message, setMessage] = useState<{ type: string, text: string } | null>(null);
+  const router = useRouter();
+
+  const form = useForm<z.infer<typeof customerChangePasswordSchema>>({
+    resolver: zodResolver(customerChangePasswordSchema),
     defaultValues: {
       password: '',
-      confirmPassword: '',
+      newPassword: '',
     },
   })
 
-  async function onSubmit(values: z.infer<typeof customerResetPasswordSchema>) {
+  interface ErrorResponse {
+    message: string;
+  }
+
+  async function onSubmit(values: z.infer<typeof customerChangePasswordSchema>) {
+    setMessage(null);
     try {
-      // Assuming an async reset password function
-      console.log(values)
-      toast.success(
-        'Password reset successful. You can now log in with your new password.',
-      )
-    } catch (error) {
-      console.error('Error resetting password', error)
-      toast.error('Failed to reset the password. Please try again.')
+      await axios.patch(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}customer/change-password`, values,
+        {
+          withCredentials: true
+        }
+      );
+      form.reset();
+      setMessage({ type: 'success', text: "Password Updated!" });
+    } catch (e) {
+      const error = e as AxiosError<ErrorResponse>;
+      if (error.response?.status === 401) {
+        router.push("/customer/login");
+      }
+      setMessage({ type: 'error', text: error.response?.data.message ?? error.message });
     }
   }
 
@@ -60,9 +73,9 @@ export default function CustomerResetPassword() {
     <div className="flex h-full w-full items-center justify-center px-4">
       <Card className="mx-auto max-w-sm w-full">
         <CardHeader>
-          <CardTitle className="text-2xl">Reset Password</CardTitle>
+          <CardTitle className="text-2xl">Change Password</CardTitle>
           <CardDescription>
-            Enter your new password to reset your password.
+            Enter your new password to change your password.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -75,12 +88,11 @@ export default function CustomerResetPassword() {
                   name="password"
                   render={({ field }) => (
                     <FormItem className="grid gap-2">
-                      <FormLabel htmlFor="password">New Password</FormLabel>
+                      <FormLabel htmlFor="password">Password</FormLabel>
                       <FormControl>
                         <PasswordInput
                           id="password"
                           placeholder="******"
-                          autoComplete="new-password"
                           {...field}
                         />
                       </FormControl>
@@ -92,17 +104,16 @@ export default function CustomerResetPassword() {
                 {/* Confirm Password Field */}
                 <FormField
                   control={form.control}
-                  name="confirmPassword"
+                  name="newPassword"
                   render={({ field }) => (
                     <FormItem className="grid gap-2">
-                      <FormLabel htmlFor="confirmPassword">
-                        Confirm Password
+                      <FormLabel htmlFor="newPasword">
+                        New Password
                       </FormLabel>
                       <FormControl>
                         <PasswordInput
-                          id="confirmPassword"
+                          id="newPassword"
                           placeholder="******"
-                          autoComplete="new-password"
                           {...field}
                         />
                       </FormControl>
@@ -112,8 +123,21 @@ export default function CustomerResetPassword() {
                 />
 
                 <Button type="submit" className="w-full">
-                  Reset Password
+                  Change Password
                 </Button>
+                {message &&
+                  <div className="w-full">
+                    <Alert variant={message.type === 'error' ? "destructive" : "default"}>
+                      {message.type === 'error'
+                        ?
+                        <AlertCircleIcon />
+                        :
+                        <CheckCircle2Icon />
+                      }
+                      <AlertTitle>{message.text}</AlertTitle>
+                    </Alert>
+                  </div>
+                }
               </div>
             </form>
           </Form>
