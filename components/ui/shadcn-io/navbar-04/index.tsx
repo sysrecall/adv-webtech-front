@@ -5,6 +5,7 @@ import { useEffect, useState, useRef, useId } from 'react';
 import { SearchIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Client } from '@pusher/push-notifications-web';
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -149,13 +150,24 @@ export const Navbar04 = React.forwardRef<HTMLElement, Navbar04Props>(
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const router = useRouter();
-    
+
+    useEffect(() => {
+      const beamsClient = new Client({
+        instanceId: process.env.NEXT_PUBLIC_PUSHER_BEAMS_INSTANCE_ID!,
+      });
+
+      beamsClient
+        .start()
+        .then(() => beamsClient.addDeviceInterest('all'))
+        .catch(console.error);
+    }, []);
+
     const onLoginClick = () => {
       redirect(loginHref, RedirectType.push);
     }
 
     const onLogoutClick = async () => {
-      axios.post(logoutHref, '', {withCredentials: true});
+      axios.post(logoutHref, '', { withCredentials: true });
       setIsLoggedIn(false);
     }
     const onMyAccountClick = () => {
@@ -223,7 +235,10 @@ export const Navbar04 = React.forwardRef<HTMLElement, Navbar04Props>(
                       <NavigationMenuItem key={index}>
                         <NavigationMenuLink
                           href={link.href}
-                          // onClick={(e) => e.preventDefault()}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            router.push(link.href ?? "/");
+                          }}
                           className="text-muted-foreground hover:text-primary font-medium transition-colors cursor-pointer group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50"
                         >
                           {link.label}
@@ -288,7 +303,7 @@ export const Navbar04 = React.forwardRef<HTMLElement, Navbar04Props>(
                   {loginText}
                 </Button>
               }
-              
+
               <Button
                 size="sm"
                 className="text-sm font-medium px-4 h-9 rounded-md shadow-sm"

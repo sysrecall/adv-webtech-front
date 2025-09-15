@@ -4,7 +4,7 @@ import { ShoppingCart, Star } from "lucide-react";
 import axios from "axios";
 import Link from "next/link";
 import Image from "next/image";
-import ArtItem from "../components/ArtItem";
+import ArtItem from "../../components/ArtItem";
 
 type Art = {
   id: string,

@@ -7,7 +7,6 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import ArtItem from "./components/ArtItem";
 import axios from "axios";
 
-// Example type
 interface Art {
   id: string;
   title: string;

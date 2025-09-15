@@ -20,8 +20,8 @@ import {
   SidebarMenuSubItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
+import Link from "next/link"
 
-// This is sample data.
 const data = {
   navMain: [
     {
@@ -35,191 +35,70 @@ const data = {
         },
         {
           "title": "Abstract",
-          "url": "arts/style/abstract"
+          "url": "/arts/style/abstract"
         },
         {
           "title": "Vintage",
-          "url": "arts/style/vintage"
+          "url": "/arts/style/vintage"
         },
         {
           "title": "Classic",
-          "url": "arts/style/classic"
+          "url": "/arts/style/classic"
         },
         {
           "title": "Black and White",
-          "url": "arts/style/bg"
+          "url": "/arts/style/bg"
         },
         {
           "title": "Minimalist",
-          "url": "arts/style/minimalist"
+          "url": "/arts/style/minimalist"
         },
         {
           "title": "Boho",
-          "url": "arts/style/boho"
+          "url": "/arts/style/boho"
         },
         {
           "title": "Typography",
-          "url": "arts/style/typography"
+          "url": "/arts/style/typography"
         },
         {
           "title": "Watercolor",
-          "url": "arts/style/watercolor"
+          "url": "/arts/style/watercolor"
         },
         {
           "title": "Surreal",
-          "url": "arts/style/surreal"
+          "url": "/arts/style/surreal"
         },
         {
           "title": "Retro",
-          "url": "arts/style/retro"
+          "url": "/arts/style/retro"
         },
         {
           "title": "Light & Airy",
-          "url": "arts/style/light-airy"
+          "url": "/arts/style/light-airy"
         },
         {
           "title": "Rustic",
-          "url": "arts/style/rustic"
+          "url": "/arts/style/rustic"
         },
         {
           "title": "Still Life",
-          "url": "arts/style/still-life"
+          "url": "/arts/style/still-life"
         },
         {
           "title": "Whimsical",
-          "url": "arts/style/whimsical"
+          "url": "/arts/style/whimsical"
         },
         {
           "title": "Vibrant",
-          "url": "arts/style/vibrant"
+          "url": "/arts/style/vibrant"
         },
         {
           "title": "Mute",
-          "url": "arts/style/mute"
+          "url": "/arts/style/mute"
         }
       ]
     },
-    // {
-    //   title: "Building Your Application",
-    //   url: "#",
-    //   items: [
-    //     {
-    //       title: "Routing",
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "Data Fetching",
-    //       url: "#",
-    //       isActive: true,
-    //     },
-    //     {
-    //       title: "Rendering",
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "Caching",
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "Styling",
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "Optimizing",
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "Configuring",
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "Testing",
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "Authentication",
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "Deploying",
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "Upgrading",
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "Examples",
-    //       url: "#",
-    //     },
-    //   ],
-    // },
-    // {
-    //   title: "API Reference",
-    //   url: "#",
-    //   items: [
-    //     {
-    //       title: "Components",
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "File Conventions",
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "Functions",
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "next.config.js Options",
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "CLI",
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "Edge Runtime",
-    //       url: "#",
-    //     },
-    //   ],
-    // },
-    // {
-    //   title: "Architecture",
-    //   url: "#",
-    //   items: [
-    //     {
-    //       title: "Accessibility",
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "Fast Refresh",
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "Next.js Compiler",
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "Supported Browsers",
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "Turbopack",
-    //       url: "#",
-    //     },
-    //   ],
-    // },
-    // {
-    //   title: "Community",
-    //   url: "#",
-    //   items: [
-    //     {
-    //       title: "Contribution Guide",
-    //       url: "#",
-    //     },
-    //   ],
-    // },
   ],
 }
 
@@ -250,13 +129,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             {data.navMain.map((item, index) => (
               <Collapsible
                 key={item.title}
-                defaultOpen={index === 1}
+                defaultOpen={index === 0}
                 className="group/collapsible"
               >
                 <SidebarMenuItem>
                   <CollapsibleTrigger asChild>
                     <SidebarMenuButton>
-                      {item.title}{" "}
+                      {item.title}{"asdasd "}
                       <Plus className="ml-auto group-data-[state=open]/collapsible:hidden" />
                       <Minus className="ml-auto group-data-[state=closed]/collapsible:hidden" />
                     </SidebarMenuButton>
@@ -270,7 +149,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                               asChild
                               isActive={item.isActive}
                             >
-                              <a href={item.url}>{item.title}</a>
+                              <Link href={item.url}>{item.title}</Link>
                             </SidebarMenuSubButton>
                           </SidebarMenuSubItem>
                         ))}
