@@ -151,16 +151,6 @@ export const Navbar04 = React.forwardRef<HTMLElement, Navbar04Props>(
 
     const router = useRouter();
 
-    useEffect(() => {
-      const beamsClient = new Client({
-        instanceId: process.env.NEXT_PUBLIC_PUSHER_BEAMS_INSTANCE_ID!,
-      });
-
-      beamsClient
-        .start()
-        .then(() => beamsClient.addDeviceInterest('all'))
-        .catch(console.error);
-    }, []);
 
     const onLoginClick = () => {
       redirect(loginHref, RedirectType.push);

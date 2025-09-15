@@ -26,6 +26,7 @@ import { PasswordInput } from '@/components/ui/password-input';
 import { PhoneInput } from '@/components/ui/phone-input';
 import axios from 'axios';
 import { redirect } from 'next/navigation';
+import { Client } from '@pusher/push-notifications-web';
 
 
 const customerRegisterSchema = z.object({
@@ -49,9 +50,15 @@ const customerRegisterSchema = z.object({
 
 async function onSubmit(values: z.infer<typeof customerRegisterSchema>) {
     const { confirmPassword, ...payload } = values;
-    console.log(payload);
 
     await axios.post('http://localhost:3000/customer', payload);
+
+    const beamsClient = new Client({
+        instanceId: process.env.NEXT_PUBLIC_PUSHER_BEAMS_INSTANCE_ID!,
+    });
+    await beamsClient.start();
+    await beamsClient.addDeviceInterest(values.username);
+
     redirect('http://localhost:8000/customer/login');
 }
 

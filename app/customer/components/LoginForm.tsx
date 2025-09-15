@@ -35,7 +35,7 @@ export function LoginForm({
           withCredentials: true
         }
       );
-      router.push("/"); 
+      router.push("/arts"); 
 
     } catch (e) {
       const error = e as AxiosError;
