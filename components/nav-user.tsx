@@ -28,6 +28,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import Link from "next/link"
 
 export function NavUser({
   user,
@@ -99,8 +100,9 @@ export function NavUser({
             </DropdownMenuGroup>
             <DropdownMenuSeparator /> */}
             <DropdownMenuItem>
-              <IconLogout />
-              Log out
+              <Link className="flex  gap-2" href={`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}customer/logout`}>
+                <IconLogout /> Log out
+              </Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

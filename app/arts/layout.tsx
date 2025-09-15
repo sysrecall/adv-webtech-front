@@ -8,7 +8,7 @@ export default function Layout({
   return (
     <>
       <div className="relative w-full">
-        <Navbar04 />
+        <Navbar04/>
       </div>
         {children}
     </>

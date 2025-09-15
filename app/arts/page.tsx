@@ -1,39 +1,78 @@
-import { AppSidebar } from "@/components/app-sidebar-home"
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
-import { Separator } from "@/components/ui/separator";
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
+"use client";
+
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import { AppSidebar } from "@/components/app-sidebar-home";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import ArtItem from "./components/ArtItem";
+import axios from "axios";
+
+// Example type
+interface Art {
+  id: string;
+  title: string;
+  imageUrl: string;
+  price: number;
+  artist: {
+    username: string;
+  }
+
+}
 
 export default function ArtsPage() {
+  const searchParams = useSearchParams();
+  const search = searchParams.get("search") || "";
+
+  const [arts, setArts] = useState<Art[]>([]);
+
+  const fetchArts = async (query: string) => {
+    try {
+      if (query === '') {
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}art`);
+        setArts(res.data);
+      } else {
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}art/search/${query}`);
+        setArts(res.data);
+      }
+    } catch (err) {
+      setArts([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchArts(search);
+  }, [search]);
+
   return (
     <>
       <SidebarProvider>
-        <AppSidebar/>
+        <AppSidebar className="sticky" />
         <SidebarInset>
           <div className="flex flex-wrap gap-2 p-4">
-            
-            <ArtItem artId="727c9a57-4770-4c58-9b5e-4cb8fb72c340" title="test" artistName="asd" imagePath="http://localhost:3000/uploads/art/astarrynight.jpg" price={123}/>
-            <ArtItem artId="727c9a57-4770-4c58-9b5e-4cb8fb72c340" title="test" artistName="asd" imagePath="http://localhost:3000/uploads/art/astarrynight.jpg" price={123}/>
-            <ArtItem artId="727c9a57-4770-4c58-9b5e-4cb8fb72c340" title="test" artistName="asd" imagePath="http://localhost:3000/uploads/art/astarrynight.jpg" price={123}/>
-            <ArtItem artId="727c9a57-4770-4c58-9b5e-4cb8fb72c340" title="test" artistName="asd" imagePath="http://localhost:3000/uploads/art/astarrynight.jpg" price={123}/>
-            <ArtItem artId="727c9a57-4770-4c58-9b5e-4cb8fb72c340" title="test" artistName="asd" imagePath="http://localhost:3000/uploads/art/astarrynight.jpg" price={123}/>
-            <ArtItem artId="727c9a57-4770-4c58-9b5e-4cb8fb72c340" title="test" artistName="asd" imagePath="http://localhost:3000/uploads/art/astarrynight.jpg" price={123}/>
+            <Suspense>
+              {arts.length === 0 && (
+                <p className="text-muted-foreground">
+                  No results found {search ? `for "${search}"` : ""}
+                </p>
+              )}
+
+              {arts.length !== 0 &&
+                arts.map((art) => (
+                  <ArtItem
+                    key={art.id}
+                    artId={art.id}
+                    title={art.title}
+                    imagePath={process.env.NEXT_PUBLIC_BACKEND_BASE_URL + art.imageUrl}
+                    price={art.price}
+                    artistName={art.artist.username}
+                  />
+                ))}
+            </Suspense>
+
 
           </div>
         </SidebarInset>
       </SidebarProvider>
-
     </>
-  )
+  );
 }

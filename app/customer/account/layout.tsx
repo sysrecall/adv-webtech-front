@@ -3,6 +3,7 @@ import { ChartAreaInteractive } from "@/components/chart-area-interactive"
 import { DataTable } from "@/components/data-table"
 import { SectionCards } from "@/components/section-cards"
 import { SiteHeader } from "@/components/site-header"
+import { Navbar04 } from "@/components/ui/shadcn-io/navbar-04"
 import {
   SidebarInset,
   SidebarProvider,
@@ -15,15 +16,11 @@ export default function Layout({
 }>) {
   return (
     <>
-      <SidebarProvider
-        style={
-          {
-            "--sidebar-width": "calc(var(--spacing) * 72)",
-            "--header-height": "calc(var(--spacing) * 12)",
-          } as React.CSSProperties
-        }
-      >
-        <AppSidebar variant="inset" />
+      <div className="relative w-full">
+        <Navbar04 />
+      </div>
+      <SidebarProvider >
+        <AppSidebar variant="inset" className="mt-16"/>
         <SidebarInset className="p-4">
           {children}
         </SidebarInset>

@@ -19,6 +19,9 @@ import {
 import { cn } from '@/lib/utils';
 import type { ComponentProps } from 'react';
 import { redirect, RedirectType } from 'next/navigation';
+import { useRouter } from "next/navigation";
+import axios from 'axios';
+
 
 // Simple logo component for the navbar
 const Logo = (props: React.SVGAttributes<SVGElement>) => {
@@ -88,6 +91,10 @@ export interface Navbar04Props extends React.HTMLAttributes<HTMLElement> {
   navigationLinks?: Navbar04NavItem[];
   loginText?: string;
   loginHref?: string;
+  logoutText?: string;
+  logoutHref?: string;
+  myAccountText?: string;
+  myAccountHref?: string;
   cartText?: string;
   cartHref?: string;
   cartCount?: number;
@@ -105,6 +112,16 @@ const defaultNavigationLinks: Navbar04NavItem[] = [
   { href: '/artists', label: 'Artists' },
 ];
 
+function getCookie(name: string) {
+  if (typeof document === "undefined") return null;
+  const cookies = document.cookie.split("; ");
+  for (const cookie of cookies) {
+    const [key, value] = cookie.split("=");
+    if (key === name) return value;
+  }
+  return null;
+}
+
 export const Navbar04 = React.forwardRef<HTMLElement, Navbar04Props>(
   (
     {
@@ -114,6 +131,10 @@ export const Navbar04 = React.forwardRef<HTMLElement, Navbar04Props>(
       navigationLinks = defaultNavigationLinks,
       loginText = 'Login',
       loginHref = '/customer/login',
+      logoutText = 'Logout',
+      logoutHref = `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}customer/logout`,
+      myAccountText = 'My Account',
+      myAccountHref = '/customer/account',
       cartText = 'Cart',
       cartHref = '/cart',
       cartCount = 0,
@@ -125,6 +146,31 @@ export const Navbar04 = React.forwardRef<HTMLElement, Navbar04Props>(
     },
     ref
   ) => {
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    const router = useRouter();
+    
+    const onLoginClick = () => {
+      redirect(loginHref, RedirectType.push);
+    }
+
+    const onLogoutClick = async () => {
+      axios.post(logoutHref, '', {withCredentials: true});
+      setIsLoggedIn(false);
+    }
+    const onMyAccountClick = () => {
+      redirect(myAccountHref, RedirectType.push);
+    }
+
+    const onCartClick = () => {
+      redirect(cartHref, RedirectType.push);
+    }
+
+
+    useEffect(() => {
+      setIsLoggedIn(getCookie("isLoggedIn") === "true");
+    }, [onLoginClick, onLoginClick]);
+
     const containerRef = useRef<HTMLElement>(null);
     const searchId = useId();
 
@@ -138,21 +184,11 @@ export const Navbar04 = React.forwardRef<HTMLElement, Navbar04Props>(
       }
     }, [ref]);
 
-    const onLoginClick = () => {
-      redirect(loginHref, RedirectType.push);
-    }
-
-    const onCartClick = () => {
-      redirect(cartHref, RedirectType.push);
-    }
-
     const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       const formData = new FormData(e.currentTarget);
       const query = formData.get('search') as string;
-      if (onSearchSubmit) {
-        onSearchSubmit(query);
-      }
+      router.push(`/arts?search=${encodeURIComponent(query)}`);
     };
 
     return (
@@ -185,7 +221,7 @@ export const Navbar04 = React.forwardRef<HTMLElement, Navbar04Props>(
                   <NavigationMenuList className="gap-1">
                     {navigationLinks.map((link, index) => (
                       <NavigationMenuItem key={index}>
-                        <NavigationMenuLink 
+                        <NavigationMenuLink
                           href={link.href}
                           // onClick={(e) => e.preventDefault()}
                           className="text-muted-foreground hover:text-primary font-medium transition-colors cursor-pointer group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50"
@@ -215,17 +251,44 @@ export const Navbar04 = React.forwardRef<HTMLElement, Navbar04Props>(
           {/* Right side */}
           {
             <div className="flex items-center gap-3">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-sm font-medium hover:bg-accent hover:text-accent-foreground"
-                onClick={(e) => {
-                  e.preventDefault();
-                  onLoginClick();
-                }}
-              >
-                {loginText}
-              </Button>
+              {isLoggedIn
+                ? <>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      onMyAccountClick();
+                    }}
+                  >
+                    {myAccountText}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="text-sm font-medium outline-red-500 hover:bg-accent hover:text-accent-foreground"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      onLogoutClick();
+                    }}
+                  >
+                    {logoutText}
+                  </Button>
+                </>
+                : <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onLoginClick();
+                  }}
+                >
+                  {loginText}
+                </Button>
+              }
+              
               <Button
                 size="sm"
                 className="text-sm font-medium px-4 h-9 rounded-md shadow-sm"
