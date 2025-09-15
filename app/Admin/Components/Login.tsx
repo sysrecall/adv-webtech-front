@@ -52,7 +52,6 @@ export default function Login() {
 
     setIsLoading(true);
     try {
-      // Important: enable credentials so cookies are stored
       const res = await api.post(
         "/admin/signin",
         form,
@@ -61,6 +60,11 @@ export default function Login() {
           withCredentials: true, 
         }
       );
+
+      if (res.data?.token) {
+        localStorage.setItem("token", res.data.token); // store JWT
+        router.push("/admin/dashboard");
+      }
 
       if (isMounted.current) {
         setMessage("Login successful!");

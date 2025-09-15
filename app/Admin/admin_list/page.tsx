@@ -128,7 +128,7 @@ export default function AdminListPage() {
         //   const response = await api.patch(`/admin/${adminId}/status`, { status: newStatus });
         await api.patch(`/admin/${adminId}/status`, { status: newStatus });
       
-      // Update local state to reflect the change
+
       setAdmins(prevAdmins => 
         prevAdmins.map(admin => 
           admin.id === adminId ? { ...admin, status: newStatus } : admin
@@ -141,7 +141,6 @@ export default function AdminListPage() {
         )
       );
 
-      // If we're on a filtered view, refetch the data to ensure consistency
       if (filter !== "all") {
         await fetchFilteredAdmins(filter);
       }
@@ -195,7 +194,7 @@ export default function AdminListPage() {
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        {/* Header */}
+        {}
         <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
           <SidebarTrigger className="-ml-1" />
           <Separator
